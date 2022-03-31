@@ -5,7 +5,7 @@ const Utils = require('./utils');
 const logLabel = 'KIEN_TEST_LOG';
 require('winston-daily-rotate-file');
 
-
+// thiết lập định dạng của log
 const logFormat = printf(function({ level, message, label, timestamp }){
     return `${timestamp} [${label}] ${level}: ${message}`;
 });
@@ -38,12 +38,14 @@ const rejectionLogTransport = new winston.transports.DailyRotateFile({
 });
 
 const alignColorsAndTime = winston.format.combine(
+    // thêm màu sắc
     winston.format.colorize({
         all:true
     }),
     winston.format.label({
         label: logLabel
     }),
+    // Định dạng time cho log
     winston.format.timestamp({
         format: function(){
             return `[${Utils.number2DateString()}]`;
@@ -54,6 +56,7 @@ const alignColorsAndTime = winston.format.combine(
 
 const logger = createLogger({
     level: "debug",
+    // format của log được kết hợp thông qua format.combine
     format: combine(
         label({ label: logLabel }),
         timestamp({
@@ -62,10 +65,12 @@ const logger = createLogger({
             }
         }),
         logFormat,
+        // thêm màu sắc
         format.colorize(),
         alignColorsAndTime
     ),
     transports: [
+        // hiển thị log thông qua console
         new transports.Console(),
         infoLogTransport
     ],
